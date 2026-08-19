@@ -1,13 +1,14 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { CreateUserDto } from './create-users.dto';
 
 @Injectable()
 export class UsersService {
   private users = [
-    { id: 1, name: 'Ivan' },
-    { id: 2, name: 'Alex' },
-    { id: 3, name: 'Petr' },
+    { id: 1, name: 'Ivan', bio: 'some bio' },
+    { id: 2, name: 'Alex', bio: 'some bio' },
+    { id: 3, name: 'Petr', bio: 'some bio' },
   ];
-  getAllUsers(): { id: number; name: string }[] {
+  getAllUsers(): { id: number; name: string; bio: string }[] {
     return this.users;
   }
 
@@ -18,10 +19,11 @@ export class UsersService {
     }
     return user;
   }
-  createUser(name: string) {
+  createUser(body: CreateUserDto) {
     const newUser = {
       id: this.users.length + 1,
-      name,
+      name: body.name,
+      bio: body.bio,
     };
     this.users.push(newUser);
     return newUser;
