@@ -1,15 +1,26 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './create-users.dto';
+import { AuthGuard } from './auth.guards';
 @Controller('users')
 export class UsersController {
   constructor(private readonly userService: UsersService) {}
   @Get()
-  getAllUsers(): { id: number; name: string }[] {
+  getAllUsers() {
     return this.userService.getAllUsers();
   }
   @Get(':id')
-  getUserById(@Param('id') id: string): { id: number; name: string } {
+  @UseGuards(AuthGuard)
+  getUserById(@Param('id', ParseIntPipe) id: number) {
     return this.userService.getUserById(Number(id));
   }
   @Get('search')
@@ -18,6 +29,6 @@ export class UsersController {
   }
   @Post()
   create(@Body() body: CreateUserDto) {
-    return this.userService.createUser(body.name);
+    return this.userService.createUser(body);
   }
 }
